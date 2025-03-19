@@ -1,0 +1,21 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.btn-custom {
+    width: 200px; /* Customizable width */
+    margin: 0 auto; /* Center the buttons */
+}
+
+:root {
+    --footer-height: 50px; /* Default height */
+}
+
+footer {
+    height: var(--footer-height);
+}
+
