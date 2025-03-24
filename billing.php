@@ -1,3 +1,5 @@
+<?php include 'connect.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,34 +72,52 @@
             z-index: 10;
         }
 
-        .card-container {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .card {
-            border-radius: 12px;
-            flex: 1;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-        }
-
-        footer {
-            background-color: #343a40;
-            color: #fff;
-            text-align: center;
-            padding: 0.75rem;
-            margin-top: auto;
-            font-size: 12px;
-            box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
-            width: 100%;
-        }
-        form{
+        form {
             width: 100%;
             height: 100%;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            display: flex;
+            flex-grow: 1;
+            gap: 5px;
+        }
+
+        .section-left {
+            width: 30%;
+            padding-right: 1rem;
+        }
+
+        .section-right {
+            width: 65%;
+            padding-left: 1rem;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 10px 0;
+            gap: 10rem;
+        }
+
+        #total-amount {
+            height: 60px;
+            text-align: center;
+            font-size: 40px;
         }
     </style>
 </head>
@@ -113,170 +133,105 @@
             <a href="#">Accounts</a>
         </div>
         <form id="billingForm" action="billing.php" method="post">
-            <div class="content-area">
-                <div class="content-wrapper">
-                    <div class="container-fluid py-4">
-                        <div class="row">
-
-                            <div class="col-md-4">
-                                <h4 class="fw-bold text-primary">Details:</h4>
-                                <div class="mb-3">
-                                    <label class="form-label">Date:</label>
-                                    <span class="text-muted">
-                                        <?php echo date('F j, Y'); ?>
-                                    </span>
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label class="form-label">Service: <span class="text-danger">*</span></label>
-                                    <select id="select_service" class="form-select">
-                                        <option value="">Select Service</option> <!-- Added value for default option -->
-                                        <?php
-                                        include 'connect.php'; // Ensure connection is included
-
-                                        $query = "SELECT description, amount FROM service_list";
-                                        $result = mysqli_query($conn, $query);
-
-                                        if (!$result) {
-                                            die("Error fetching services: " . mysqli_error($conn)); // Improved error handling
-                                        }
-
-                                        while ($row = mysqli_fetch_array($result)) {
-                                            $description = htmlspecialchars($row["description"]); // Prevents XSS attacks
-                                            $amount = htmlspecialchars($row["amount"]);            // Ensures safe display
-                                            echo "<option value='$description|$amount'>$description - ₱$amount</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Staff: <span class="text-danger">*</span></label>
-                                    <select id="select_staff" class="form-select">
-                                        <option>Select Staff</option>
-                                        <?php
-                                        $query = "SELECT * FROM employees";
-                                        $result = mysqli_query($conn, $query);
-                                        while ($row = mysqli_fetch_array($result)) {
-                                            $fname = $row["firsname"];
-                                            $lname = $row["lastnsame"];
-                                            $com = $row["comm_percentage"];
-                                            echo "<option value='$fname $lname|$com'>$fname $lname - $com%</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <button type="button" onclick="addToTable()" class="btn btn-primary w-100">Add</button>
-                            </div>
-
-                            <div class="col-md-8">
-                                <h4 class="fw-bold text-primary">
-                                    <i class="bi bi-person-fill"></i> Bill To:
-                                </h4>
-                                <input type="text" name="customer_name" class="form-control mb-3" placeholder="Customer's name">
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" id="serviceTable">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th>Description</th>
-                                                <th>Amount</th>
-                                                <th>Staff</th>
-                                                <th>Staff Commission</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tableBody">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+            <div class="container">
+                <div class="content">
+                    <!-- Left Section -->
+                    <div class="section-left">
+                        <h5 class="fw-bold">Details:</h5>
+                        <div class="mb-2">
+                            <label class="form-label">Date:</label>
+                            <h3><?php echo date('F j, Y') ?></h3>
                         </div>
+                        <div class="mb-2">
+                            <label class="form-label">Service:</label>
+                            <select class="form-select" name="selected_service" id="selected-service">
+                                <option>Select service</option>
+                                <?php
+                                $query = $conn->prepare("SELECT * FROM service_list");
+                                $query->execute();
+                                $result = $query->get_result();
+                                while ($row = $result->fetch_assoc()) {
+                                    $value = $row['service_name'] . "-" . intval($row['amount']);
+                                    echo "<option>$value</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Staff:</label>
+                            <select class="form-select" name="selected_staff" id="selected-staff">
+                                <option>Select staff</option>
+                                <?php
+                                $query = $conn->prepare("SELECT * FROM employees_list");
+                                $query->execute();
+                                $result = $query->get_result();
+                                while ($row = $result->fetch_assoc()) {
+                                    $value = $row['firstname'] . " " . $row['lastname'] . "-" . intval($row["comm_percentage"]) . "%";
+                                    echo "<option>$value</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <input type="submit" name="btn_save" class="btn btn-primary w-100" value="Save">
+                    </div>
+
+                    <!-- Right Section -->
+                    <div class="section-right">
+                        <h5 class="fw-bold"><i class="bi bi-person"></i> Bill To:</h5>
+                        <input type="text" class="form-control mb-2" placeholder="Customer's name">
+                        <table class="table table-unbordered">
+                            <thead>
+                                <tr>
+                                    <th>Service/s</th>
+                                    <th>Amount</th>
+                                    <th>Staff</th>
+                                    <th>Staff Commission</th>
+                                    <th colspan="2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                            <tr>
+                                <!-- table data here -->
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Payment Section -->
-                <div class="payment-section">
-                    <div class="d-flex justify-content-center align-items-center mt-3">
-                        <h5 class="fw-bold text-primary me-2">
-                            <i class="bi bi-calculator"></i> Total Amount:
-                        </h5>
-                        <input type="text"
-                            name="total_amount"
-                            id="totalAmount"
-                            class="form-control w-25 text-end fw-bold fs-3 bg-light border-primary text-primary"
-                            value="₱0"
-                            readonly>
+                <div class="footer">
+                    <div class="w-50">
+                        <h5 class="fw-bold">Received Amount:</h5>
+                        <input type="text" class="form-control">
+                        <h5 class="fw-bold mt-2">Change:</h5>
+                        <input type="text" class="form-control" disabled>
                     </div>
-
-                    <div class="text-end mt-3">
-                        <input type="submit" value="Done" name="done" class="btn btn-primary">
-                        <?php
-                        include 'connect.php';
-                        $query = "SELECT * FROM serviceTable";
-                        $result = mysqli_query($conn, $query);
-                        $num_services = isset($_POST['num_services']) ? intval($_POST['num_services']) : 0;
-                        $transact_date = date("F j, Y");
-                        $customer_name = isset($_POST['customer_name']) ? $_POST['customer_name'] : '';
-                        $total_amount = isset($_POST['total_amount']) ? $_POST['total_amount'] : '₱0';
-                        if (isset($_POST["done"])) {
-                            $query = "INSERT INTO transactions 
-                                    (transaction_date, customer_name, total_amount, num_services) 
-                                    VALUES ('$transact_date', '$customer_name', '$total_amount', $num_services)";
-                            $insertResult = mysqli_query($conn, $query);
-
-                            if (!$insertResult) {
-                                die("Insert failed: " . mysqli_error($conn)); // Debugging insert issues
-                            }
-                        }
-                        ?>
+                    <div class="w-50 text-end">
+                        <h5 class="fw-bold"><i class="bi bi-calculator"></i> Total Amount:</h5>
+                        <input type="text" class="form-control" disabled id="total-amount" value="100">
+                        <input type="submit" class="btn btn-primary w-100 mt-3" value="Review">
                     </div>
                 </div>
             </div>
-    </div>
-    </form>
-
-
-    <script>
-        let totalAmount = 0;
-
-        function addToTable() {
-            const serviceData = document.getElementById('select_service').value.split('|');
-            const staffData = document.getElementById('select_staff').value.split('|');
-
-            const serviceDesc = serviceData[0];
-            const serviceAmount = parseFloat(serviceData[1]);
-            const staffName = staffData[0];
-            const staffCommission = staffData[1];
-
-            const tableBody = document.getElementById('tableBody');
-            const newRow = `
-                <tr>
-                    <td class="text-center">${serviceDesc}</td>
-                    <td class="text-center">₱${serviceAmount}</td>
-                    <td class="text-center">${staffName}</td>
-                    <td class="text-center">${staffCommission}%</td>
-                    <td class="text-center">
-                        <button class="btn btn-danger btn-sm" onclick="deleteRow(this, ${serviceAmount})">Delete</button>
-                    </td>
-                </tr>
-            `;
-
-            tableBody.insertAdjacentHTML('beforeend', newRow);
-            totalAmount += serviceAmount;
-            document.getElementById('totalAmount').value = `₱${totalAmount.toFixed(2)}`;
-        }
-
-        function deleteRow(button, amount) {
-            button.closest('tr').remove();
-            totalAmount -= amount;
-            document.getElementById('totalAmount').value = `₱${totalAmount.toFixed(2)}`;
-        }
-    </script>
-
-    <?php include 'includes/footer.php'; ?>
+        </form>
+        </script>
 </body>
 
 </html>
+
+<?php
+// Logic for selected services and selected staff to be saved to the table
+$service = $price = $staff = $commission = "";
+
+if (isset($_POST["btn_save"])) {
+    $service_and_price = explode("-", $_POST['selected_service']); //extract the data
+    $staff_and_commission = explode("-", $_POST['selected_staff']); //extract the data
+
+    $service =  $service_and_price[0];
+    $price = intval($service_and_price[1]);
+
+    $staff = $staff_and_commission[0];
+    $commission = (int)rtrim($staff_and_commission[1], "%");
+
+    ////unfinised
+}
+?>

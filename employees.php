@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -15,6 +19,7 @@
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
+            font-family: 'Poppins';
         }
 
         .main-content {
@@ -87,13 +92,26 @@
             box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
             width: 100%;
         }
+        .logo {
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-self: center;
+        }
+        #salon-name{
+            font-family: 'Dancing Script';
+        }
     </style>
 </head>
 
 <body>
     <div class="main-content">
         <div class="sidebar">
-            <h4 class="text-center mb-4">Admin Panel</h4>
+            <div class="logo-container d-flex justify-content-center align-items-center mb-3">
+                <img src="assets/img/adoralogo.jpg" alt="" class="logo">
+            </div>
+            <h4 class="text-center mb-4" id="salon-name">Adora Beauty Lounge</h4>
             <a href="admin.php">Dashboard</a>
             <a href="services.php">Services</a>
             <a href="employees.php" class="active">Employees</a>
@@ -109,13 +127,13 @@
 
             <div class="top-bar">
                 <div class="search-bar">
-                    <input type="text" class="form-control" placeholder="Search employee...">
-                    <button class="btn btn-primary">Search</button>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search employee...">
+                    <button id="btnSearch" class="btn btn-primary">Search</button>
                 </div>
 
                 <div class="btn-actions">
-                    <button class="btn btn-success">
-                        <i class="bi bi-plus-lg"></i> New Employee
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                        <i class="bi bi-plus-lg"></i>New Employee
                     </button>
                 </div>
             </div>
@@ -124,41 +142,40 @@
                 <table class="table table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
-                            <th>Date Started</th>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
+                            <th hidden>ID</th>
+                            <th>Fullname</th>
                             <th>Birthdate</th>
                             <th>Address</th>
+                            <th>Date Started</th>
                             <th>Commission %</th>
                             <th colspan="2">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="employeeTableBody">
                         <?php
                         include 'connect.php';
-                        $query = mysqli_query($conn, "SELECT * FROM employees");
+                        $query = mysqli_query($conn, "SELECT * FROM employees_list ORDER BY id DESC");
                         while ($row = mysqli_fetch_assoc($query)) {
                         ?>
-                        <tr>
-                            <td><?php echo $row['id']; ?></td>
-                            <td><?php echo $row['date']; ?></td>
-                            <td><?php echo $row['firsname']; ?></td>
-                            <td><?php echo $row['lastnsame']; ?></td>
-                            <td><?php echo $row['birthdate']; ?></td>
-                            <td><?php echo $row['address']; ?></td>
-                            <td><?php echo intval($row['comm_percentage']);?>%</td>
-                            <td>
-                                <a href="edit_employee.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                            </td>
-                            <td>
-                                <a href="delete_employee.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td hidden><?php echo $row['id']; ?></td>
+                                <td><?php echo $row['firstname'] . " " . $row['lastname']; ?></td>
+                                <td><?php echo $row['birth_date']; ?></td>
+                                <td><?php echo $row['address']; ?></td>
+                                <td><?php echo $row['date_started']; ?></td>
+                                <td><?php echo intval($row['comm_percentage']); ?>%</td>
+                                <td>
+                                    <div class="d-flex flex-row gap-1">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEmployeeModal<?php echo $row['id']; ?>">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </button><!-- Open the edit modal -->
+
+                                        <a href="delete_employee.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php } ?>
                     </tbody>
                 </table>
@@ -166,7 +183,109 @@
         </div>
     </div>
 
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="add_employees.php" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Firstname</label>
+                            <input type="text" name="firstname" class="form-control" required>
+                            <label class="form-label">Lastname</label>
+                            <input type="text" name="lastname" class="form-control" required>
+                            <label class="form-label">Birthdate</label>
+                            <input type="date" name="b_date" class="form-control" required>
+                            <label class="form-label">Address</label>
+                            <input type="text" name="address" class="form-control" required>
+                            <label class="form-label">Commission Percentage</label>
+                            <input type="number" name="commission_percent" class="form-control" required>
+                            <label class="form-label">Contact No.</label>
+                            <input type="number" name="contact_no" class="form-control" required>
+                            <label class="form-label">Date Started</label>
+                            <input type="text" name="date_started" class="form-control" value="<?php echo date('F j, Y') ?>" disabled>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" name="save_employee" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+    include 'connect.php';
+    $query = mysqli_query($conn, "SELECT * FROM employees_list ORDER BY id DESC");
+    while ($row = mysqli_fetch_assoc($query)) {
+    ?>
+        <div class="modal fade" id="editEmployeeModal<?php echo $row['id']; ?>" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Employee</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="update_employee.php" method="POST">
+                            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+
+                            <div class="mb-3">
+                                <label class="form-label">Firstname</label>
+                                <input type="text" name="firstname" class="form-control" value="<?php echo $row['firstname']; ?>" required>
+
+                                <label class="form-label">Lastname</label>
+                                <input type="text" name="lastname" class="form-control" value="<?php echo $row['lastname']; ?>" required>
+
+                                <label class="form-label">Birthdate</label>
+                                <input type="date" name="b_date" class="form-control" value="<?php echo $row['birth_date']; ?>" required>
+
+                                <label class="form-label">Address</label>
+                                <input type="text" name="address" class="form-control" value="<?php echo $row['address']; ?>" required>
+
+                                <label class="form-label">Commission Percentage</label>
+                                <input type="number" name="commission_percent" class="form-control" value="<?php echo intval($row['comm_percentage']); ?>" required>
+
+                                <label class="form-label">Contact No.</label>
+                                <input type="number" name="contact_no" class="form-control" value="<?php echo $row['contact_number']; ?>" required>
+
+                                <label class="form-label">Date Started</label>
+                                <input type="text" name="date_started" class="form-control" value="<?php echo $row['date_started']; ?>" disabled>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" name="update_employee" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
     <?php include 'includes/footer.php'; ?>
+
+    <script>
+        $(document).ready(function() {
+            $("#btnSearch").click(function() {
+                var searchKey = $("#searchInput").val();
+                $.ajax({
+                    url: "search_employees.php",
+                    method: "POST",
+                    data: {
+                        search: searchKey
+                    },
+                    success: function(response) {
+                        $("#employeeTableBody").html(response);
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

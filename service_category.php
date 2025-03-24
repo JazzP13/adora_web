@@ -43,7 +43,7 @@ if (!$conn) {
 
 <body>
     <div class="conten-area">
-            <div class="d-flex flex-row align-items-center bg-primary justify-content-center top-contenet">
+            <div class="d-flex flex-row align-items-center justify-content-center top-contenet">
                 <div class="d-flex flex-row button-container" >
                     <a href="services.php" class="d-flex flex-row btn text-white gap-1"><i class="bi bi-arrow-left"></i>Back</a>
                 </div>

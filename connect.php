@@ -1,3 +1,3 @@
 <?php
-$conn = mysqli_connect("localhost","root","","adora");
+$conn = mysqli_connect("localhost","root","","adora_web");
 ?>
