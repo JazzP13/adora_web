@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -18,6 +21,7 @@
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
+            font-family: 'Poppins';
         }
 
         .main-content {
@@ -75,8 +79,10 @@
             padding: 1rem;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-height: 400px; /* Adjust height as desired */
-            overflow-y: auto; /* Enables vertical scrollbar */
+            max-height: 400px;
+            /* Adjust height as desired */
+            overflow-y: auto;
+            /* Enables vertical scrollbar */
         }
 
         footer {
@@ -89,18 +95,31 @@
             box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
             width: 100%;
         }
+        #salon-name{
+            font-family: 'Dancing Script';
+        }
+        .logo {
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-self: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="main-content">
         <div class="sidebar">
-            <h4 class="text-center mb-4">Staff Panel</h4>
+            <div class="logo-container d-flex justify-content-center align-items-center mb-3">
+                <img src="assets/img/adoralogo.jpg" alt="" class="logo">
+            </div>
+            <h4 class="text-center mb-4" id="salon-name">Adora Beauty Lounge</h4>
             <a href="staff.php">Dashboard</a>
             <a href="billing.php">Billing</a>
             <a href="S_customers.php">Customers</a>
             <a href="s_transaction_history.php" class="active">Transaction History</a>
-            <a href="#">Account</a>
+            <a href="admin.php">Management</a>
         </div>
 
         <div class="content-area">
@@ -159,7 +178,7 @@
                                     <td class="text-center"><?php echo $row['num_services']; ?></td>
                                     <td><a href="view_transaction.php?id= <?php echo $row['transaction_id']; ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> View Details</a>
                                     </td>
-                                </tr>;
+                                </tr>
                         <?php
                             }
                         } else {

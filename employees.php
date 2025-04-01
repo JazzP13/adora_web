@@ -54,7 +54,7 @@
 
         .content-area {
             flex: 1;
-            padding: 2rem;
+            padding: 1rem;
             background-color: #f8f9fa;
         }
 
@@ -102,6 +102,19 @@
         #salon-name{
             font-family: 'Dancing Script';
         }
+        th {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        tr{
+            font-size: 0.9rem;
+        }
+        #edit{
+            font-size: 12px;
+        }
+        #delete{
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -119,6 +132,7 @@
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php">Transaction History</a>
             <a href="report.php">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
 
@@ -139,7 +153,7 @@
             </div>
 
             <div class="table-container">
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover table-responsive">
                     <thead class="table-dark">
                         <tr>
                             <th hidden>ID</th>
@@ -166,11 +180,11 @@
                                 <td><?php echo intval($row['comm_percentage']); ?>%</td>
                                 <td>
                                     <div class="d-flex flex-row gap-1">
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEmployeeModal<?php echo $row['id']; ?>">
+                                        <button class="btn btn-primary btn-sm" id="edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal<?php echo $row['id']; ?>">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </button><!-- Open the edit modal -->
 
-                                        <a href="delete_employee.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger">
+                                        <a href="delete_employee.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" id="delete">
                                             <i class="bi bi-trash"></i> Delete
                                         </a>
                                     </div>

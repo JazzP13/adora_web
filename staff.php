@@ -1,3 +1,12 @@
+<?php
+/*session_start();
+if(!isset($_SESSION['staff_id'])){
+    header('location:login.php');
+}*/
+include 'connect.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +22,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
 
     <style>
         body {
@@ -34,7 +45,7 @@
             color: #fff;
             padding: 1rem;
             box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
-        }
+            }
 
         .sidebar a {
             color: #fff;
@@ -58,7 +69,7 @@
             padding: 2rem;
             background-image: url(assets/img/adorahome.png);
             background-size: cover;
-            
+
         }
 
         .card-container {
@@ -89,12 +100,13 @@
             width: 100%;
         }
 
-        .head-text h2{
+        .head-text h2 {
             font-family: 'Dancing Script';
             font-size: 80px;
             color: #fff;
         }
-        #salon-name{
+
+        #salon-name {
             font-family: 'Dancing Script';
         }
 
@@ -105,7 +117,6 @@
             justify-content: center;
             align-self: center;
         }
-
     </style>
 </head>
 
@@ -120,7 +131,7 @@
             <a href="billing.php">Billing</a>
             <a href="S_customers.php">Customers</a>
             <a href="s_transaction_history.php">Transaction History</a>
-            <a href="#">Accounts</a>
+            <a href="admin.php">Management</a>
         </div>
 
         <div class="content-area">
@@ -128,20 +139,33 @@
                 <h2 class="mb-4">Adora Beauty Lounge</h2>
             </div>
 
+            <?php
+            $sql = "SELECT COUNT(*) AS num_of_emoloyess FROM employees_list"; // QUERY TO GET THE NUMBER OF EMPLOYEES
+            $query_result = mysqli_query($conn, $sql);
+            $result = mysqli_fetch_assoc($query_result);
+            ?>
+
             <div class="card-container">
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center">
                         <h5 class="card-title">Total Employees</h5>
-                        <p class="display-4 fw-bold text-success">8</p>
+                        <p class="display-4 fw-bold text-success"><?php echo $result['num_of_emoloyess']; ?></p>
                         <p class="text-muted">Active Employees</p>
                     </div>
                 </div>
 
+
+                <?php
+                $sql_2 = "SELECT COUNT(*) AS num_of_services FROM service_list"; // QUERY TO GET THE NUMBER OF SERVICES
+                $query_result_2 = mysqli_query($conn, $sql_2);
+                $row = mysqli_fetch_assoc($query_result_2);
+                ?>
+
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center">
-                        <h5 class="card-title">New Hires</h5>
-                        <p class="display-4 fw-bold text-primary">2</p>
-                        <p class="text-muted">Recently Added</p>
+                        <h5 class="card-title">Total Services</h5>
+                        <p class="display-4 fw-bold text-primary"><?php echo $row['num_of_services']; ?></p>
+                        <p class="text-muted">Available services</p>
                     </div>
                 </div>
             </div>

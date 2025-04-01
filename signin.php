@@ -1,84 +1,105 @@
-<?php include 'includes/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - Adora Billing System</title>
+    <title>Log in - Adora Billing System</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/style.css"> <!-- Custom CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins';
+            height: 100vh;
+        }
+
         .main-content {
-            background: url('assets/img/adorahome.png') no-repeat center center/cover;
-            height: 100vh; /* Full screen height */
+            background-color: white;
+            height: 60%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .signin-box {
-            background-color: rgba(0, 0, 0, 0.7); /* Dark overlay for readability */
-            color: #fff;
-            border-radius: 15px;
-            padding: 3rem;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            width: 40%;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 10px;
         }
 
         .form-control {
-            background-color: transparent; 
-            border: 1px solid #fff; 
-            color: #fff;
+            width: 300px;
+            padding: 0.5rem;
+            border-radius: 5px;
         }
 
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+        .form-label {
+            color: red;
         }
 
         .btn-primary {
-            width: 100%;
+            width: 270px;
             margin-top: 1rem;
         }
 
         a {
-            color: #fff;
-            text-decoration: none;
+            color: rgb(21, 18, 243);
+            font-style: italic;
         }
 
         a:hover {
             text-decoration: underline;
         }
-        footer{
-            height: 5px
+
+        h1 {
+            font-family: 'Montserrat';
+            font-weight: 700;
+        }
+        .left-container{
+            width: 35%;
         }
     </style>
 </head>
+
 <body>
     <!-- Body Section with Background Image -->
-    <div class="main-content">
-        <div class="signin-box">
-            <h2 class="text-center mb-4">Sign In</h2>
-            <form action="process_signin.php" method="POST">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
-                </div>
+    <div class="container main-content">
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-                </div>
 
-                <button type="submit" name="submit" class="btn btn-primary">Sign In</button>
-            </form>
 
-            <div class="text-center mt-3">
-                <a href="signup.php">Don't have an account? Sign Up</a>
+        <!-- right side -->
+        <div class="right">
+            <div class="signup-box">
+                <h1 class="text-center mb-4 mt-5 text-primary">Login</h1>
+                <form action="process_signin.php" method="POST">
+                    <div class="bottom-field mb-2 d-flex flex-column justify-content-center align-items-center">
+                        <div class="ms-2">
+                            <label for="firstname" class="form-label">*</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="ms-2">
+                            <label for="lastname" class="form-label">*</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <div class="container-fluid d-flex justify-content-center">
+                        <input type="submit" name="btn-signin" id="signin" class="btn btn-primary d-flex justify-content-center align-items-center" value="Login">
+                    </div>
+
+                    <p class="text-center mt-3"><a href="signup.php">Create account</a></p>
+                </form>
             </div>
         </div>
-    </div>
-    <?php include 'includes/footer.php'; ?>
 </body>
+
 </html>

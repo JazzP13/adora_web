@@ -1,30 +1,40 @@
 <?php
+session_start();
 include 'connect.php'; // Database connection
 
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize input
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = $_POST['password'];
+$username = $_POST['username'];
+$password = $_POST['password']; // Entered password
 
-    // Check if username exists
-    $query = "SELECT * FROM staff_account WHERE username = '$username'";
-    $res = mysqli_query($conn, $query);
+// Debug: Print entered password
+echo "Entered Password: " . htmlspecialchars($password) . "<br>";
 
-    if ($res && mysqli_num_rows($res) > 0) {
-        $user = mysqli_fetch_assoc($res);
+// Prepare and execute query
+$query = "SELECT * FROM users WHERE username = ?";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "s", $username);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-        // Verify password (assuming password is hashed)
-        if (password_verify($password, $user['password'])) {
-            // Successful login
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $user['role']; // If there's a role column for user types
-            echo "<script>alert('Login successful!'); window.location.href='staff.php';</script>";
-        } else {
-            echo "<script>alert('Invalid password. Please try again.'); window.location.href='signin.php';</script>";
-        }
+if ($result && mysqli_num_rows($result) > 0) {
+    $user = mysqli_fetch_assoc($result);
+    $hashed_password = $user['password']; // Get stored hashed password
+
+    // Debug: Print hashed password from DB
+    echo "Hashed Password from DB: " . $hashed_password . "<br>";
+
+    // Verify password
+    if (password_verify($password, $hashed_password)) {
+        echo "✅ Password Match! Redirecting...";
+        $_SESSION['username'] = $username;
+        header("Location: admin.php");
+        exit();
     } else {
-        echo "<script>alert('Username not found. Please try again.'); window.location.href='signin.php';</script>";
+        echo "❌ Invalid password!";
     }
+} else {
+    echo "❌ Username not found!";
 }
+
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
 ?>

@@ -51,10 +51,12 @@
 
         .sidebar a:hover {
             background-color: #495057;
+            color: white;
         }
 
         .active {
             background-color: #007bff;
+            color: #fff;
         }
 
         /* Content Area */
@@ -123,13 +125,14 @@
                 <img src="assets/img/adoralogo.jpg" alt="" class="logo">
             </div>
             <h4 class="text-center mb-4" id="salon-name">Adora Beauty Lounge</h4>
-            <a href="admin.php" class="active">Dashboard</a>
+            <a href="admin.php" class="active text-white">Dashboard</a>
             <a href="services.php">Services</a>
             <a href="employees.php">Employees</a>
             <a href="customers.php">Customers</a>
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php">Transaction History</a>
             <a href="report.php">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
 

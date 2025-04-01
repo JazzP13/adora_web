@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -61,6 +64,7 @@
             /* Change from grid to flex */
             gap: 1.5rem;
             /* Maintain the spacing between cards */
+            font-family: 'Poppins';
         }
 
         .card {
@@ -68,10 +72,12 @@
             padding: 1.5rem;
             color: #fff;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Poppins';
         }
 
         .total-customers {
             background-color: #17a2b8;
+            line-height: 1px;
         }
 
         .total-commission {
@@ -95,7 +101,18 @@
             margin-top: auto;
             font-size: 12px;
             box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
+          
             width: 100%;
+        }
+        .logo {
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-self: center;
+        }
+        #salon-name{
+            font-family: 'Dancing Script';
         }
 
         @media (max-width: 992px) {
@@ -117,7 +134,10 @@
 <body>
     <div class="main-content">
         <div class="sidebar">
-            <h4 class="text-center mb-4">Admin Panel</h4>
+            <div class="logo-container d-flex justify-content-center align-items-center mb-3">
+                <img src="assets/img/adoralogo.jpg" alt="" class="logo">
+            </div>
+            <h4 class="text-center mb-4" id="salon-name">Adora Beauty Lounge</h4>
             <a href="admin.php">Dashboard</a>
             <a href="services.php">Services</a>
             <a href="employees.php">Employees</a>
@@ -125,6 +145,7 @@
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php">Transaction History</a>
             <a href="report.php" class="active">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
 
@@ -140,75 +161,33 @@
             </div>
 
 
-            <div class="card-container">
+            <div class="card-container d-flex flex-wrap">
                 <div class="card total-customers">
-                    <h4>Total Customers Served</h4>
+                    <h4>Total Customers</h4><br>
+                    <h4>Served :</h4><br>
                     <p class="fs-3 fw-bold">
-                        <?php
-                        include 'connect.php';
-                        $query = mysqli_query($conn, "SELECT COUNT(*) AS total_customers FROM customers_list");
-                        $result = mysqli_fetch_assoc($query);
-                        echo $result['total_customers'];
-                        ?>
+                        
                     </p>
                 </div>
 
                 <div class="card total-commission">
                     <h4>Total Commission</h4>
                     <p class="fs-3 fw-bold">
-                        ₱ <?php
-                            $query = mysqli_query($conn, "SELECT SUM(commission) AS total_commission FROM transactiondetails");
-                            $result = mysqli_fetch_assoc($query);
-                            echo number_format($result['total_commission'], 2);
-                            ?>
+                        ₱ 
                     </p>
                 </div>
 
                 <div class="card total-sales">
                     <h4>Total Sales</h4>
                     <p class="fs-3 fw-bold">
-                        ₱ <?php
-                            $query = mysqli_query($conn, "SELECT SUM(total_amount) AS total_sales FROM transactions");
-                            $result = mysqli_fetch_assoc($query);
-                            echo number_format($result['total_sales'], 2);
-                            ?>
+                        ₱ 
                     </p>
                 </div>
 
                 <div class="card total-profit">
                     <h4>Total Profit</h4>
                     <p class="fs-3 fw-bold">
-                        ₱ <?php
-                            include 'connect.php';
-                            if (isset($_POST['submit'])) {
-                                $selecteddate = mysqli_real_escape_string($conn, $_POST['selecteddate']); // Sanitize input
-
-                                // SQL query to calculate total profit
-                                $query = "
-                                    SELECT 
-                                        IFNULL(SUM(t.total_amount) - SUM(td.total_commission), 0) AS total_profit
-                                    FROM transactions t
-                                    LEFT JOIN (
-                                        SELECT 
-                                            transaction_id, 
-                                            SUM(commission) AS total_commission
-                                        FROM transactiondetails
-                                        GROUP BY transaction_id
-                                    ) td ON td.transaction_id = t.transaction_id
-                                    WHERE DATE(t.transaction_date) = '$selecteddate'
-                                ";
-
-                                $result = mysqli_query($conn, $query);
-
-                                if ($result) {
-                                    $row = mysqli_fetch_assoc($result);
-                                    $total_profit = $row['total_profit'];
-                                    echo "<script>alert('Total Profit for $selecteddate: PHP $total_profit');</script>";
-                                } else {
-                                    echo "<script>alert('Error calculating profit: " . mysqli_error($conn) . "');</script>";
-                                }
-                            }
-                            ?>
+                        ₱ 
                     </p>
                 </div>
             </div>

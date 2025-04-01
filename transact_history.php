@@ -93,6 +93,7 @@
             box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
             width: 100%;
         }
+
         .logo {
             height: 120px;
             border-radius: 50%;
@@ -100,7 +101,8 @@
             justify-content: center;
             align-self: center;
         }
-        #salon-name{
+
+        #salon-name {
             font-family: 'Dancing Script';
         }
     </style>
@@ -120,6 +122,7 @@
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php" class="active">Transaction History</a>
             <a href="report.php">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
 
@@ -172,14 +175,14 @@
                         } elseif (mysqli_num_rows($query) > 0) {
                             while ($row = mysqli_fetch_assoc($query)) { ?>
                                 <tr>
-                                    <td style='display:none;'>{$row['transaction_id']}</td>
+                                    <td hidden><?php $row['transaction_id']?></td>
                                     <td><?php echo $row['transaction_date']; ?></td>
                                     <td><?php echo $row['customer_name']; ?></td>
                                     <td>₱ <?php echo $row['total_amount']; ?></td>
                                     <td class="text-center"><?php echo $row['num_services']; ?></td>
-                                    <td><a href="view_transaction.php?id= <?php echo $row['transaction_id']; ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> View Details</a>
+                                    <td><a href="transaction_details.php?transaction_id=<?php echo $row['transaction_id']; ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> View Details</a>
                                     </td>
-                                </tr>;
+                                </tr>
                         <?php
                             }
                         } else {
@@ -192,23 +195,20 @@
         </div>
     </div>
 
+    <!--- View Details Modal -->
+    <div>
+        
+    </div>
+
     <?php include 'includes/footer.php'; ?>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('refresh-btn').addEventListener('click', function() {
-            const currentDate = new Date();
-            const formattedDate = currentDate.toISOString().split('T')[0];
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'fetch_commissions.php?date=' + formattedDate, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    document.getElementById('table-body').innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send();
-        });
+        function openMyModal() {
+            var modal = new bootstrap.Modal(document.getElementById('viewDetails'));
+            modal.show();
+        }
     </script>
+
 </body>
 
 </html>

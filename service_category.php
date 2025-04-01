@@ -23,10 +23,9 @@ if (!$conn) {
     <style>
         body {
             font-family: 'Poppins';
-            background-image: url(assets/img/adorahome.png);
+            background-image: url('assets/img/adorahome.png');
             background-repeat: no-repeat;
             background-size: cover;
-            background-color: rgba(0, 0, 0, 0.8);
         }
 
         .table-container {

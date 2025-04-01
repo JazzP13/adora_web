@@ -117,6 +117,7 @@
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php">Transaction History</a>
             <a href="report.php">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
 
@@ -134,22 +135,29 @@
                 <table class="table table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
                             <th>Fullname</th>
-                            <th>Date Visited</th>
-                            <th colspan="2">Actions</th>
+                            <th>Date last visited</th>
+                            <th colspan="3"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         include 'connect.php';
-                        $query = mysqli_query($conn, "SELECT * FROM customers_list ORDER BY id DESC");
-                        while ($row = mysqli_fetch_assoc($query)) {
+                        $query = "SELECT *, MAX(date_visited) AS date_last_visited 
+                                                                        FROM customers_list
+                                                                        GROUP BY fullname 
+                                                                        ORDER BY date_last_visited DESC";
+                        $result = mysqli_query($conn, $query);
+                        if (!$result) {
+                            die('Query Failed' . mysqli_error($conn));
+                        }
+                        while ($row = $result->fetch_assoc()) {
                         ?>
                             <tr>
                                 <td><?php echo $row['id']; ?></td>
                                 <td><?php echo $row['fullname']; ?></td>
-                                <td><?php echo $row['date_visited']; ?></td>
+                                <td><?php echo $row['date_last_visited']; ?></td>
                                 <td>
                                     <div class="d-flex gap-1">
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editCustomerModal<?php echo $row['id']; ?>">
@@ -159,6 +167,7 @@
                                         <a href="delete_customer.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger">
                                             <i class="bi bi-trash"></i> Delete
                                         </a>
+                                        <a href="customer_details.php?fullname=<?php echo $row['fullname']; ?>" class="btn btn-sm btn-warning"><i class="bi bi-eye"></i>Details</a>
                                     </div>
                                 </td>
                             </tr>

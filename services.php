@@ -127,6 +127,7 @@
             <a href="commission.php">Commissions</a>
             <a href="transact_history.php">Transaction History</a>
             <a href="report.php">Reports</a>
+            <a href="staff.php">Billing</a>
             <a href="#">Accounts</a>
         </div>
         <!-- Main Content Area -->
